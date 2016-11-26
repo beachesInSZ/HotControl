@@ -9,6 +9,7 @@
     int btnID = Integer.parseInt(click);
     switch(btnID) {
     	case 0:  Client.leftMouse(); break;
+    	case 1:  Client.rightMouse(); break;
     }
    
     %>

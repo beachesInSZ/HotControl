@@ -44,4 +44,8 @@ public class Client {
     public static void leftMouse() {
         c.implement.leftMouse(0);
     }
+    
+    public static void rightMouse() {
+    	c.implement.rightMouse(0);
+    }
 }

@@ -2,12 +2,9 @@
 	pageEncoding="UTF-8"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
-
 <head>
-
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<meta name="viewport"
-	content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <!-- <meta name="x5-fullscreen" content="true">
 <meta name="full-screen" content="yes"> -->
 <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -15,29 +12,44 @@
 html, body {
 	overflow: hidden;
 	margin: 0px;
-	background-color: yellow;
+	color:#fff;
 }
-div {=
-
+#workdiv {
+	position:absolute;
+	left: 0px;
+	bottom: 0px;
+	top: 0px;
+	right: 0px;
+	background-color: #333
 }
 #leftMouse {
 	z-index : 10;
-	width: 50px;
-	height: 100px;
-	background-color: red; 
+	width: 50%;
+	height: 60px;
+	background-color: #333;
+	position:absolute;
+	left: 0px;
+	bottom: 0px;
+	border-right:2px solid #ddd;
+}
+
+#rightMouse {
+	z-index : 10;
+	width:50%;
+	height: 60px;
+	background-color: #333; 
 	position:absolute;
 	right: 0px;
-	top: 0px;
+	bottom: 0px;
+	border-left:2px solid #ddd;
 }
+
 </style>
-<title>Insert title here</title>
+<title>Hot Control</title>
 </head>
-
 <body>
-
-	<div id="workdiv"
-		style="width: 85%; height: 1000px; background-color: gray">
-		<div>10.0aaa</div>
+	<div id="workdiv" >
+		<div>V0.0.2-SNAPSHOT</div>
 		<div>
 			<span id="coordinate"></span>
 		</div>
@@ -47,24 +59,32 @@ div {=
 		<div>
 			<span id="startcurrent"></span>
 		</div>
+		<div>
+			<span id="startTouch"></span>
+		</div>
 	</div>
-	<div id="leftMouse">
-	</div>
+	<div id="leftMouse"></div>
+	<div id="rightMouse"></div>
 </body>
 <script src="js/jquery-3.1.1.js"></script>
 <script type="text/javascript">
-var html = document.querySelector('html');
-html.addEventListener('touchmove', function(event) {
-	event.preventDefault();
+	var html = document.querySelector('html');
+	
+	html.addEventListener('touchmove', function(event) {
+		event.preventDefault();
 	});
-html.addEventListener('touchstart', function(event) {
-	event.preventDefault();
+	
+	html.addEventListener('touchstart', function(event) {
+		event.preventDefault();
 	});
+	
+	var startTouch;
 	var obj = document.querySelector('#workdiv');
 	var lastDate = new Date();
+	
 	obj.addEventListener('touchmove', function(event) {
 		var currentDate = new Date();
-		if(currentDate.getTime() - lastDate.getTime() < 50) {
+		if(currentDate.getTime() - lastDate.getTime() < 100) {
 			return;
 		} else {
 			lastDate = currentDate;
@@ -82,36 +102,13 @@ html.addEventListener('touchstart', function(event) {
 			});
 			pressX = touch.pageX;
 			pressY = touch.pageY;
-			/* var direct = "none";
-			if (Math.abs(spanX) > Math.abs(spanY)) {
-			    //水平方向
-			    if (spanX > 0) {
-			        direct = "right";//向右
-			        //do right function
-			    } else {
-			        direct = "left";//向左
-			        //do left function
-			    }
-			} else {
-			    //垂直方向
-			    if (spanY > 0) {
-			        direct = "down";//向下
-			        //do down function
-			    } else {
-			        direct = "up";//向上
-			        //do up function
-			    }
-			}
-			
-			// 把元素放在手指所在的位置
-			touchMove.value = direct + "(" + spanX + ';' + spanY + ")"; */
 		}
 
 	}, false);
 	
 	obj.addEventListener('touchstart', function(event) {
 		event.preventDefault();
-
+		
 		// 如果这个元素的位置内只有一个手指的话
 		if (event.targetTouches.length == 1) {
 			var touch = event.targetTouches[0];
@@ -119,9 +116,11 @@ html.addEventListener('touchstart', function(event) {
 			pressX = touch.pageX;
 			pressY = touch.pageY;
 			$('#startcurrent').text(pressX + ',' + pressY);
-			touchStart.value = pressX + ';' + pressY;
+			
+			startTouch = new Date().getTime();
 		}
 	}, false);
+	
 	obj.addEventListener('touchend', function(event) {
 		event.preventDefault();
 
@@ -132,18 +131,33 @@ html.addEventListener('touchstart', function(event) {
 			pressX = touch.pageX;
 			pressY = touch.pageY;
 			$('#startcurrent').text(pressX + ',' + pressY);
-			touchStart.value = pressX + ';' + pressY;
+		}
+		
+		$('#startTouch').text(startTouch);
+		if (new Date().getTime() - startTouch < 100) {
+			$.get("click.jsp?click=0", function(data, status) {
+				$('#return').text("Data: " + data + "nStatus: " + status);
+			});
 		}
 	}, false);
+	
 	document.querySelector('#leftMouse').addEventListener('touchstart',function(){
 		$('#return').text("leftMouse");
 		$.get("click.jsp?click=0", function(data, status) {
 			$('#return').text("Data: " + data + "nStatus: " + status);
 		});
 	});
+	
+	document.querySelector('#rightMouse').addEventListener('touchstart',function(){
+		$('#return').text("rightMouse");
+		$.get("click.jsp?click=1", function(data, status) {
+			$('#return').text("Data: " + data + "nStatus: " + status);
+		});
+	});
 </script>
 <script type="text/javascript">
 	$(function() {
+		
 	});
 </script>
 </html>
