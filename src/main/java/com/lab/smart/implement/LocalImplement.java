@@ -62,6 +62,18 @@ public class LocalImplement implements IImplement{
         return result;
     }
     
+    public EventResult scrollWheel(int amount) {
+    	EventResult result = null;
+        if(!checkRobot()) {
+            result = EventResult.getEventResult(EventResult.CODE_FAILED, "robot is null");
+        } else {
+        	robot.mouseWheel(amount);
+        	System.out.println("Scroll Wheel :" + amount);
+            result = EventResult.getEventResult();
+        }
+        return result;
+	}
+    
     private void pressMouse(int mouse, int releaseDelay) {
         robot.mousePress(mouse);
         robot.delay(releaseDelay);
@@ -79,7 +91,5 @@ public class LocalImplement implements IImplement{
     private void pressKey(int key) {
         pressMouse(key, 0);
     }
-    
-    
     
 }

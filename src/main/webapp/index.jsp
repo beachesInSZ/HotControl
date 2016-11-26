@@ -49,7 +49,7 @@ html, body {
 </head>
 <body>
 	<div id="workdiv" >
-		<div>V0.0.2-SNAPSHOT</div>
+		<div>V0.0.3-SNAPSHOT</div>
 		<div>
 			<span id="coordinate"></span>
 		</div>
@@ -68,6 +68,7 @@ html, body {
 </body>
 <script src="js/jquery-3.1.1.js"></script>
 <script type="text/javascript">
+	var delay = 100;
 	var html = document.querySelector('html');
 	
 	html.addEventListener('touchmove', function(event) {
@@ -84,7 +85,7 @@ html, body {
 	
 	obj.addEventListener('touchmove', function(event) {
 		var currentDate = new Date();
-		if(currentDate.getTime() - lastDate.getTime() < 100) {
+		if(currentDate.getTime() - lastDate.getTime() < delay) {
 			return;
 		} else {
 			lastDate = currentDate;
@@ -102,6 +103,14 @@ html, body {
 			});
 			pressX = touch.pageX;
 			pressY = touch.pageY;
+		} else if (event.targetTouches.length == 2) {
+			var touch = event.targetTouches[0];
+			var xa = touch.pageX - pressXA;
+			touch = event.targetTouches[1];
+			var xb = touch.pageX - pressXB;
+			$.get("scroll.jsp?spanXA="+xa+"&spanXB=" + xb, function(data, status) {
+				$('#return').text("Data: " + data + "nStatus: " + status);
+			});
 		}
 
 	}, false);
@@ -118,23 +127,21 @@ html, body {
 			$('#startcurrent').text(pressX + ',' + pressY);
 			
 			startTouch = new Date().getTime();
+		} else if (event.targetTouches.length == 2) {
+			var touch = event.targetTouches[0];
+			// 把元素放在手指所在的位置
+			pressXA = touch.pageX;
+			pressYA = touch.pageY;
+			
+			touch = event.targetTouches[1];
+			pressXB = touch.pageX;
+			pressYB = touch.pageY;
 		}
 	}, false);
 	
 	obj.addEventListener('touchend', function(event) {
 		event.preventDefault();
-
-		// 如果这个元素的位置内只有一个手指的话
-		if (event.targetTouches.length == 1) {
-			var touch = event.targetTouches[0];
-			// 把元素放在手指所在的位置
-			pressX = touch.pageX;
-			pressY = touch.pageY;
-			$('#startcurrent').text(pressX + ',' + pressY);
-		}
-		
-		$('#startTouch').text(startTouch);
-		if (new Date().getTime() - startTouch < 100) {
+		if (new Date().getTime() - startTouch < delay) {
 			$.get("click.jsp?click=0", function(data, status) {
 				$('#return').text("Data: " + data + "nStatus: " + status);
 			});

@@ -8,6 +8,8 @@ import java.awt.Toolkit;
 import com.lab.smart.implement.LocalImplement;
 
 public class Client {
+	
+	private static final double ZOOM_SIZE = 3;
 
     private int locationX = 0;
     private int locationY = 0;
@@ -25,9 +27,9 @@ public class Client {
     IImplement implement = new LocalImplement();
 
     public static void move(int x, int y) {
-        System.out.println(x +"mouseIn" +y);
-        c.locationX = c.locationX + (int)(x*2.5);
-        c.locationY = c.locationY + (int)(y*2.5);
+        System.out.println(x + "mouseIn" + y);
+        c.locationX = c.locationX + (int)(x * ZOOM_SIZE);
+        c.locationY = c.locationY + (int)(y * ZOOM_SIZE);
         if (c.locationX < 0) {
             c.locationX = 0;
         } else if (c.locationX > c.screenWidth) {
@@ -47,5 +49,18 @@ public class Client {
     
     public static void rightMouse() {
     	c.implement.rightMouse(0);
+    }
+    
+    public static void scroll(int xa, int xb) {
+    	int amount = 0;
+    	if (xa * xb > 0) {
+    		if (xa > 0) {
+    			amount = Math.max(xa, xb);
+    		} else {
+    			amount = Math.min(xa, xb);
+    		}
+    	}
+    	amount /= ZOOM_SIZE;
+    	c.implement.scrollWheel(-amount);
     }
 }
